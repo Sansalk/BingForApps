@@ -1,0 +1,110 @@
+﻿@{
+    ViewBag.Title = "Welcome";
+}
+
+<style>
+    table, tr, td, th {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin: 10px;
+    }
+</style>
+
+<h2>Bing For Apps</h2>
+<body data-ng-app="SearchAPIApp">
+<div id="tblSubs" ng-controller="searchController">
+    <hr>
+    <div>
+        <input type="text" class="q form-control input-lg" placeholder="Search the web..." ng-model="searchTerm">
+        <img class="search search-icon" ng-click="getResults()" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC0AAAAtCAIAAAC1eHXNAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAJ4SURBVFhH7Ze/SyNBFIDvD/AURbjiCnsLrWws7C2uEa4R5JSzsPGstLTaRCVoI4tIsBAJEsREhRViYSEiqAiKqHcS7DxOExV/YnPqBwcy+9bd7E5IkGOXj0XezO58O/PmTfxQYRjvgdDDTuhhJ/SwE3rY+b88PhpGczz+fWGhP5PpXlxsmZqqjEREH2+K9agdHh5cXf19c/Nsv87u7qJra59GRkR/N4ryaDTNn/k8o+bu7+M7O13p9JdE4lsqNbG19ef2lnj28rJpclI89Sb6Hg2myfAMFltfd34388R8/H16un589KOi6VEzNHRwfo5EZzotmlTa5+ZQYVYKLpCmx8DKChJjGxsi7oRZoSd3ERdoepxcXV08PPhJQxaIXCFtvXeQjgfpySdO7+6KuBukLf3ZzCKuouPxNZnkvT8sS8TdIEvoT10RcRUdD97Iezvm50XcjdaZGfpT4kRcRcejbXaW9/YtL4u4GxjTn2or4ir6+ZHY2xNxNyhx9Kfwi7iKjgf8yucpUJ9jMRF3wp6i3FH4OYNEk4qmR69l8Ynm5qaIO6Ha0pMzSMQFmh5Vkcj26SkD9CwtiSYVqi19OIOoIqJJoOlRHY1mslnG4GJWnAvEclBtaWVRyCfR6kTHAwnr+JgxUPk3K+QKacsOYmtQVyhxVFvinEEch+LxNwns8SrBnb9ZIHLlKJcjol4Ufs4gjkPxuBvBPISE2lQ/Pk5docRRbf0shCCAh4dE8fj1KKkE+PIotQQU9uB3Q+rwsKQSUMADieT+PhKolE4CvDxeJbgH/X8kKF4e1OzySICXR93oKCplkIDCeVoeQg87oYed0MPO+/AwjBdwzFuPy7W/ZwAAAABJRU5ErkJggg==">
+
+    </div>
+
+    <hr>
+    <br>
+
+    <div class="bing-search-demo-codes demo-codes">
+
+        <div class="tab-content tab-preview">
+            <div data-ng-repeat="webPage in results.webPages.value">
+                <a class="webpage-url" target="_blank" href="{{webPage.url}}">
+                    <span><b>{{webPage.name}}</b></span>
+                </a>
+                <br>
+                <span class="webpage-display-url"><b>{{webPage.displayUrl}}</b></span>
+                <br>
+                <span>{{webPage.snippet}}</span>
+                <br><br>
+            </div>
+            <div>
+                <h4>Videos of <a target="_blank" href="{{results.webSearchUrl}}">{{searchTerm}}</a></h4><h4></h4>
+            </div>
+
+            <div data-ng-repeat="video in results.videos.value">
+                <div class="video-thumbnail-container">
+                    <a target="_blank" href="{{video.webSearchUrl}}">
+                        <img class="video-preview-thumbnail" motion-thumbnail="{{video.motionThumbnailUrl}}"
+                             static-thumbnail="{{video.thumbnailUrl}}"
+                             src="{{video.thumbnailUrl}}">
+                    </a>
+                    <div class="video-caption">{{video.name}}</div>
+                </div>
+            </div>
+
+            <div class="clear"></div><br><br>
+            <div>
+                <h4>News about <a target="_blank" href="{{news.id}}">{{searchTerm}}</a></h4><h4></h4>
+            </div>
+            <div data-ng-repeat="news in results.news.value">
+                <img class="news-thumbnail" src="{{news.image.contentUrl}}">
+                <div class="news-snippet">
+                    <a target="_blank" href="{{news.url}}"><span>{{news.name}}</span></a>
+                    <br>
+                    <span>
+                        {{news.description}}
+                    </span>
+                </div><br class="clear"><br>
+            </div>
+
+            <hr>
+
+            <div>
+                <h4>
+                    Related searches for
+                    <a ng-target="_blank" ng-href="{{relatedSearch.id}}">{{searchTerm}}</a>
+                </h4><h4></h4>
+            </div>
+            <div class="related-search" data-ng-repeat="relatedSearch in results.relatedSearches.value">
+                <a ng-target="_blank" ng-href="{{relatedSearch.webSearchUrl}}">{{relatedSearch.displayText}}</a>
+
+            </div>
+
+        </div>
+        <div class="filler"></div>
+        <div class="clear"></div>
+    </div>
+    <br>
+    <input type="button" value="Next Page" ng-click="getResults(true)" class="btn btn-success">
+    <input type="button" value="Download as CSV" ng-click='JSONToCSVConvertor(results);' class="btn btn-success">
+    <br>
+    <div id="chart_div"></div>
+
+</div>
+
+
+
+
+</body>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { packages: ['corechart', 'bar'] });
+</script>
+
+
+<script src="~/Scripts/angular.js"></script>
+<script src="~/Src/module.js"></script>
+<script src="~/Src/search/search.service.js"></script>
+<script src="~/Src/search/search.controller.js"></script>
+<link href="~/Content/BingDemos.css" rel="stylesheet" />
+<link href="~/Content/Demos.css" rel="stylesheet"/>
